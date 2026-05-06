@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奶奶的电视机</title>
+    <style>
+        body { 
+            background: #000; color: #fff; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; font-family: sans-serif;
+        }
+        .loading { text-align: center; }
+        .spinner { border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid #fff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <div class="spinner"></div>
+        <p id="msg">正在为奶奶开电视，请稍后...</p >
+    </div>
+
+    <script src="./config.js?v=1.1"></script> 
+    <script>
+        // 为了防止 GitHub Pages 缓存，我们在获取数据时可以加个随机参数（如果 config.js 改为 API 或 JSON 会更稳）
+        window.onload = function() {
+            // 1. 记录进度（发送 Webhook 通知你的手机）
+            if (TV_CONFIG.webhookUrl) {
+                fetch(TV_CONFIG.webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ "msg": "奶奶开始看：" + TV_CONFIG.dramaName + TV_CONFIG.episode })
+                });
+            }
+
+            // 2. 延迟 0.5 秒立即跳转
+            setTimeout(() => {
+                // 使用 replace 确保奶奶点“返回”不会卡在加载页
+                window.location.replace(TV_CONFIG.videoUrl);
+            }, 500);
+        };
+    </script>
+</body>
+</html>
